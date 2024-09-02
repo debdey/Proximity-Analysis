@@ -1,46 +1,37 @@
-import pandas as pd
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from collections import defaultdict, Counter
-import itertools
+Proximity analysis on textual data, such as verbatims, involves examining how closely certain words or phrases appear in relation to one another. This can help identify patterns, such as common associations or the context in which specific terms are used.
 
-# Download necessary NLTK data files
-nltk.download('punkt')
-nltk.download('stopwords')
+Here's a general approach to performing proximity analysis on a CSV file with verbatim data:
 
-# Load the CSV file
-file_path = 'your_file.csv'  # Replace with your actual file path
-df = pd.read_csv(file_path)
+1. Load the Data
+First, load the CSV file into a data frame.
+2. Text Preprocessing
+Tokenization: Break down the text into individual words or phrases.
+Stopwords Removal: Remove common words like "and," "the," etc., that may not add value to the analysis.
+Stemming/Lemmatization: Reduce words to their base form (e.g., "running" -> "run").
+3. Define Target Words/Phrases
+Specify the words or phrases you want to analyze for proximity.
+4. Calculate Proximity
+Window-based Approach: You can define a "window" (e.g., 5 words before and after the target word) and count the frequency of other words appearing within this window.
+Co-occurrence Matrix: Create a matrix where rows and columns represent words, and the value represents the number of times they appear together within a specified window.
+5. Analyze Results
+Frequency Analysis: Identify the most frequent co-occurring words.
+Network Graphs: Visualize the relationships between words using network graphs.
+Heatmaps: Use heatmaps to visualize the proximity of terms.
+Would you like to proceed with the proximity analysis using Python? If so, please upload the CSV file, and I can help you with the code to perform this analysis.
 
-# Assuming the verbatim text is in a column named 'text'
-texts = df['text'].astype(str).tolist()
+Explanation:
+Load the CSV File: The code loads the CSV file using pandas. Replace 'your_file.csv' with your actual file path.
 
-# Preprocess the text: tokenization, stopwords removal
-stop_words = set(stopwords.words('english'))
-processed_texts = []
+Text Preprocessing:
 
-for text in texts:
-    tokens = word_tokenize(text.lower())
-    filtered_tokens = [word for word in tokens if word.isalpha() and word not in stop_words]
-    processed_texts.append(filtered_tokens)
+Tokenization: Converts the text into lowercase and splits it into individual words.
+Stopwords Removal: Filters out common English stopwords.
+Target Words: Replace ['your', 'target', 'words'] with the specific words you want to analyze for proximity.
 
-# Define the target words or phrases
-target_words = ['your', 'target', 'words']  # Replace with words you're interested in
+Co-occurrence Calculation: The code creates a sliding window around each target word to count the frequency of nearby words.
 
-# Create a co-occurrence dictionary
-co_occurrence = defaultdict(Counter)
-window_size = 5  # Define the proximity window size (e.g., 5 words before and after)
+Output: The proximity analysis results are printed, showing the top 10 words that frequently appear near each target word.
 
-for tokens in processed_texts:
-    for i, word in enumerate(tokens):
-        if word in target_words:
-            window = tokens[max(i - window_size, 0):min(i + window_size + 1, len(tokens))]
-            window.remove(word)  # Remove the target word from its own window
-            co_occurrence[word].update(window)
-
-# Display the proximity results
-for word, counter in co_occurrence.items():
-    print(f"Proximity analysis for '{word}':")
-    for co_word, count in counter.most_common(10):  # Show the top 10 co-occurring words
-        print(f"  {co_word}: {count}")
+Next Steps:
+Customization: You can modify the window_size and target_words to better suit your needs.
+Visualization: Consider visualizing the results using libraries like matplotlib or networkx for network graphs or heatmaps.
